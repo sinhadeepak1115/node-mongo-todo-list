@@ -19,25 +19,43 @@ const itemsSchema = {
 
 const Item  = mongoose.model('Item', itemsSchema)
 
+const item1 = new Item({name:"Kotlin"});
+const item2 = new Item({name:"Go"});
+const item3 = new Item({name:"Linux"});
+const item4 = new Item({name:"React"});
+
+const defaultItems = [item1, item2, item3, item4];
+
+
+
+
 app.get("/", function(req, res) {
 
-const day = date.getDate();
+  Item.find({}, function(err, foundItems){
+    
 
-  res.render("list", {listTitle: day, newListItems: items});
+
+    if (foundItems.length ===0){
+      Item.insertMany(defaultItems, function(err){
+        if (err){
+          console.log(err);
+        }else{
+          console.log("Items are saved in DB")
+        }
+      });
+    }else{
+      res.render("list", {listTitle: "Today", newListItems: foundItems});
+    }
+
+  })
+
 
 });
 
 app.post("/", function(req, res){
-
-  const item = req.body.newItem;
-
-  if (req.body.list === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
-  } else {
-    items.push(item);
-    res.redirect("/");
-  }
+  const itemName = req.body.newItem;
+  const item =  new Item({name: itemName});
+  item.save();
 });
 
 app.get("/work", function(req,res){
