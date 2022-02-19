@@ -56,7 +56,14 @@ app.post("/", function(req, res){
   const itemName = req.body.newItem;
   const item =  new Item({name: itemName});
   item.save();
+  res.redirect("/");
 });
+
+app.post("/delete", function(req, res){
+  const checkedItemId = req.body.checkbox;
+
+  
+})
 
 app.get("/work", function(req,res){
   res.render("list", {listTitle: "Work List", newListItems: workItems});
